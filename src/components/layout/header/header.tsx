@@ -9,7 +9,7 @@ import { useLogout } from '@/hooks/useLogout';
 import { useStore } from '@/hooks/useStore';
 import { navigateToTransfer } from '@/utils/transfer-utils';
 import { Localize } from '@deriv-com/translations';
-import { Header, Loader, useDevice, Wrapper } from '@deriv-com/ui';
+import { Header, useDevice, Wrapper } from '@deriv-com/ui';
 import { AppLogo } from '../app-logo';
 import AccountSwitcher from './account-switcher';
 import MenuItems from './menu-items';
@@ -165,7 +165,14 @@ const AppHeader = observer(() => {
             else if (position === 'right') {
                 return (
                     <div className='auth-actions auth-actions--loading'>
-                        <Loader color='var(--text-prominent)' />
+                        <svg
+                            className='auth-actions__spinner'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            xmlns='http://www.w3.org/2000/svg'
+                        >
+                            <circle cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeDasharray='31.416' strokeDashoffset='10' />
+                        </svg>
                     </div>
                 );
             }
@@ -201,14 +208,8 @@ const AppHeader = observer(() => {
                     <MobileMenu onLogout={handleLogout} />
                     <AppLogo />
                     {isDesktop ? <MenuItems /> : renderAccountSection('left')}
-                </Wrapper>                
-                <Wrapper variant='right'>
-                    {
-                        <div className='auth-actions auth-actions--loading'>
-                            <Loader color='var(--text-prominent)' />
-                        </div>
-                    }
                 </Wrapper>
+                <Wrapper variant='right'>{renderAccountSection('right')}</Wrapper>
             </Header>
         </>
     );
