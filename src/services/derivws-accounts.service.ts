@@ -121,7 +121,6 @@ export class DerivWSAccountsService {
     static async fetchAccountsList(accessToken: string): Promise<DerivAccount[]> {
         // If there's already a fetch in progress, return that promise
         if (this.accountsFetchPromise) {
-            console.log('[DerivWS] Reusing existing accounts fetch promise');
             return this.accountsFetchPromise;
         }
 
@@ -186,7 +185,6 @@ export class DerivWSAccountsService {
 
         // If there's already a fetch in progress for this account, return that promise
         if (this.otpFetchPromises.has(cacheKey)) {
-            console.log(`[DerivWS] Reusing existing OTP fetch promise for account: ${accountId}`);
             return this.otpFetchPromises.get(cacheKey)!;
         }
 
@@ -252,11 +250,9 @@ export class DerivWSAccountsService {
             // Step 1: Check if accounts are already stored (optimization for refresh)
             const storedAccounts = this.getStoredAccounts();
             if (storedAccounts && storedAccounts.length > 0) {
-                console.log('[DerivWS] Using cached accounts from storage');
                 accounts = storedAccounts;
             } else {
                 // Step 2: Fetch accounts list if not in storage
-                console.log('[DerivWS] Fetching accounts from API');
                 accounts = await this.fetchAccountsList(accessToken);
 
                 if (!accounts || accounts.length === 0) {
@@ -273,7 +269,6 @@ export class DerivWSAccountsService {
                 (activeLoginId && accounts.find(a => a.account_id === activeLoginId)) || accounts[0];
 
             // Step 4: Fetch OTP and WebSocket URL for the resolved account (always fresh OTP)
-            console.log(`[DerivWS] Fetching OTP for account: ${targetAccount.account_id}`);
             const websocketURL = await this.fetchOTPWebSocketURL(accessToken, targetAccount.account_id);
             return websocketURL;
         } catch (error) {

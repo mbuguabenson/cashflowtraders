@@ -131,8 +131,6 @@ class APIBase {
                         // Set account type based on account_id prefix
                         const isDemo = accountId.startsWith('VRT') || accountId.startsWith('VRTC');
                         localStorage.setItem('account_type', isDemo ? 'demo' : 'real');
-
-                        console.log('[APIBase] Set active_loginid from sessionStorage:', accountId);
                     }
                 }
             } catch (error) {
