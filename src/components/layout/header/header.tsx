@@ -201,8 +201,14 @@ const AppHeader = observer(() => {
                     <MobileMenu onLogout={handleLogout} />
                     <AppLogo />
                     {isDesktop ? <MenuItems /> : renderAccountSection('left')}
+                </Wrapper>                
+                <Wrapper variant='right'>
+                    {
+                        <div className='auth-actions auth-actions--loading'>
+                            <Loader color='var(--text-prominent)' />
+                        </div>
+                    }
                 </Wrapper>
-                <Wrapper variant='right'>{renderAccountSection('right')}</Wrapper>
             </Header>
         </>
     );
