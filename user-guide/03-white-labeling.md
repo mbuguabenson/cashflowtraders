@@ -45,7 +45,7 @@ The platform is designed for complete white-labeling through a centralized confi
 | `src/components/layout/app-logo/BrandLogo.tsx` | Logo component          |
 | `src/components/layout/header/header-config.tsx` | Desktop menu items    |
 | `src/components/layout/header/mobile-menu/use-mobile-menu-config.tsx` | Mobile menu items |
-| `src/styles/_themes.scss`        | Auto-generated CSS variables     |
+| `src/components/shared/styles/_themes.scss` | Auto-generated CSS variables (do not edit) |
 | `scripts/generate-brand-css.js`  | CSS generator script             |
 
 ---
@@ -332,7 +332,7 @@ Then reference in config:
 **Option C: Self-Hosted Fonts**
 
 1. Add font files to `public/fonts/`
-2. Create `src/styles/_fonts.scss`:
+2. Edit `src/components/shared/styles/_fonts.scss` (already present in the template):
 
 ```scss
 @font-face {
@@ -823,7 +823,7 @@ Test in Chrome/Edge, Firefox, and Safari. Verify:
 
 **For Google Fonts:** Verify the `<link>` import in `public/index.html` and that the font name in config matches exactly.
 
-**For Self-Hosted Fonts:** Verify files are in `public/fonts/`, check the `@font-face` declaration in `src/styles/_fonts.scss`, and check the browser network tab for 404 errors.
+**For Self-Hosted Fonts:** Verify files are in `public/fonts/`, check the `@font-face` declaration in `src/components/shared/styles/_fonts.scss`, and check the browser network tab for 404 errors.
 
 ### CSS Generation Script Fails
 

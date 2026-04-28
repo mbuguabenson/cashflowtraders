@@ -319,7 +319,7 @@ Everything else in `brand.config.json` is fully customizable:
 
 Issues: Scattered across 12 files, significant overlap (auth documented in 3 files), mix of current and deprecated information, no clear reading order.
 
-### After: `documation/` (8 files, topic-organized)
+### After: `user-guide/` (8 files, topic-organized)
 
 | File                            | Consolidates From                                           |
 | ------------------------------- | ----------------------------------------------------------- |

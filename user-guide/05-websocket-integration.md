@@ -331,44 +331,42 @@ Access Token stored in sessionStorage
     ↓
 DerivWSAccountsService.getAuthenticatedWebSocketURL()
     ↓
-1. GET /derivatives/accounts (fetch accounts list)
+1. GET {baseURL}options/accounts  (fetch accounts list)
     ↓
 2. Store accounts in sessionStorage
     ↓
 3. Select default account (first in list)
     ↓
-4. POST /options/accounts/{accountId}/otp (get WebSocket URL)
+4. POST {baseURL}options/accounts/{accountId}/otp  (get WebSocket URL)
     ↓
-5. Parse nested JSON response
-    ↓
-6. Clean and return WebSocket URL
+5. Return WebSocket URL from response as-is
     ↓
 WebSocket connection established
 ```
+
+`{baseURL}` and the `options/` prefix both come from `brand.config.json` — the base URL from `platform.derivws.url.{staging|production}` and the `options/` segment from `platform.derivws.directories.options`.
 
 ### API Endpoints
 
 #### Accounts List
 
-- **URL:** `{baseURL}derivatives/accounts`
+- **URL:** `{baseURL}options/accounts`
 - **Method:** GET
 - **Headers:** `Authorization: Bearer {accessToken}`
 - **Response:**
 
 ```json
 {
-    "data": {
-        "data": [
-            {
-                "account_id": "VRTC12345",
-                "balance": "10000.00",
-                "currency": "USD",
-                "group": "demo",
-                "status": "active",
-                "account_type": "demo"
-            }
-        ]
-    }
+    "data": [
+        {
+            "account_id": "VRTC12345",
+            "balance": "10000.00",
+            "currency": "USD",
+            "group": "demo",
+            "status": "active",
+            "account_type": "demo"
+        }
+    ]
 }
 ```
 
@@ -377,35 +375,24 @@ WebSocket connection established
 - **URL:** `{baseURL}options/accounts/{accountId}/otp`
 - **Method:** POST
 - **Headers:** `Authorization: Bearer {accessToken}`
-- **Response:** (nested JSON string)
+- **Response:**
 
 ```json
 {
-    "data": "{\"data\":{\"url\":\"wss://staging-api.derivws.com/trading/v1/options/ws/demo?otp=xxx\"}}"
+    "data": {
+        "url": "wss://staging-api.derivws.com/trading/v1/options/ws/demo?otp=xxx"
+    }
 }
 ```
 
-The nested JSON response requires special parsing:
+Extraction is a single property read — no nested-JSON parsing or URL rewriting is performed:
 
 ```typescript
 const otpResponse = await response.json();
-const parsedData = JSON.parse(otpResponse.data);
-const websocketURL = parsedData.data.url;
+const websocketURL = otpResponse.data.url;
 ```
 
-### URL Cleaning
-
-The raw WebSocket URL is cleaned before use:
-
-```typescript
-// Input:  wss://staging-api.derivws.com/trading/v1/options/ws/demo?otp=xxx
-// Output: staging-api.derivws.com/trading/v1/options/ws
-
-const urlObj = new URL(websocketURL);
-const hostname = urlObj.hostname;
-const pathname = urlObj.pathname.replace(/\/(demo|real)$/, '');
-const cleanURL = `${hostname}${pathname}`;
-```
+The URL (including `?otp=...` and the `/demo` or `/real` segment) is passed directly to `new WebSocket()`.
 
 ### Fallback Strategy
 
@@ -639,7 +626,7 @@ Look for `[DerivWS]` prefixed messages in the console:
 
 ```
 [DerivWS] Starting authenticated WebSocket URL flow
-[DerivWS] Fetching accounts from: .../derivatives/accounts
+[DerivWS] Fetching accounts from: .../options/accounts
 [DerivWS] Fetched accounts: 3
 [DerivWS] Using default account: CR1234567
 [DerivWS] WebSocket URL obtained

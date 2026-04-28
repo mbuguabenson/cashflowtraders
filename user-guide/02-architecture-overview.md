@@ -77,18 +77,20 @@ The application follows a layered architecture:
 
 The application bootstraps by:
 1. Configuring MobX (`isolateGlobalState: true`)
-2. Running optional analytics initialization
-3. Rendering the `AuthWrapper` component which handles initial auth state
+2. Rendering the `AuthWrapper` component which handles initial auth state
+
+Analytics initialization is not wired up in the base template — it was removed to reduce bundle size. See [Monitoring & Analytics](./07-monitoring-analytics.md) for how to re-enable it.
 
 ### Root Component
 
 **File:** `src/app/App.tsx`
 
 Sets up:
-- React Router v6 with lazy-loaded routes
+- React Router v6 with a single index route (`/`) that renders a `Layout` wrapper → `AppRoot` → `AppContent`
 - Translation provider (`@deriv-com/translations`) — optional, defaults to English if no Crowdin CDN is configured
 - MobX `StoreProvider` wrapping the entire app
 - `CoreStoreProvider` bridging API state to MobX stores
+- OAuth callback handling (via `useOAuthCallback` hook) — extracts `?code=...&state=...` from the URL and hands off to `OAuthTokenExchangeService`
 
 ### Core Store Provider
 
@@ -119,21 +121,32 @@ The application uses MobX for reactive state management through a centralized **
 
 ```
 RootStore (src/stores/root-store.ts)
-├── core
-│   ├── ui        (UIStore)       - Theme, responsive state, modals
-│   ├── client    (ClientStore)   - Authentication, account data, balance
-│   └── common    (CommonStore)   - Shared app-wide state
 │
-├── blockly       (BlocklyStore)      - Blockly workspace state
-├── run_panel     (RunPanelStore)     - Bot execution controls
-├── dashboard     (DashboardStore)    - Dashboard data and stats
-├── toolbox       (ToolboxStore)      - Available Blockly blocks
-├── load_modal    (LoadModalStore)    - Strategy loading UI
-├── save_modal    (SaveModalStore)    - Strategy saving UI
-├── google_drive  (GoogleDriveStore)  - Google Drive integration
-├── journal       (JournalStore)      - Bot execution logs
-└── transactions  (TransactionsStore) - Trade history
+├── ui                       (UiStore)             - Theme, responsive state, modals
+├── client                   (ClientStore)         - Authentication, account data, balance
+├── common                   (CommonStore)         - Shared app-wide state, global error
+├── core                                           - { ui, client, common } — convenience grouping
+│
+├── app                      (AppStore)            - App-level orchestration
+├── dashboard                (DashboardStore)      - Dashboard data and stats
+├── blockly_store            (BlocklyStore)        - Blockly workspace state
+├── chart_store              (ChartStore)          - Chart state
+├── data_collection_store    (DataCollectionStore) - Market data collection
+├── flyout                   (FlyoutStore)         - Blockly flyout UI
+├── flyout_help              (FlyoutHelpStore)     - Blockly flyout help content
+├── google_drive             (GoogleDriveStore)    - Google Drive integration
+├── journal                  (JournalStore)        - Bot execution logs
+├── load_modal               (LoadModalStore)      - Strategy loading UI
+├── quick_strategy           (QuickStrategyStore)  - Quick-strategy templates
+├── run_panel                (RunPanelStore)       - Bot execution controls
+├── save_modal               (SaveModalStore)      - Strategy saving UI
+├── summary_card             (SummaryCardStore)    - Contract summary card
+├── toolbar                  (ToolbarStore)        - Blockly toolbar
+├── toolbox                  (ToolboxStore)        - Available Blockly blocks
+└── transactions             (TransactionsStore)   - Trade history
 ```
+
+Open [`src/stores/root-store.ts`](../src/stores/root-store.ts) for the canonical list — the constructor initializes every store in the order they depend on each other.
 
 ### Accessing Stores in Components
 
@@ -236,29 +249,33 @@ WebSocket Message (msg_type: 'balance')
 
 ## Routing
 
-**Framework:** React Router v6 with lazy-loaded routes.
-
-### Main Routes
-
-| Path          | Component      | Description                           |
-| ------------- | -------------- | ------------------------------------- |
-| `/`           | Dashboard      | Bot statistics and quick actions      |
-| `/bot`        | Bot Builder    | Blockly visual programming workspace  |
-| `/chart`      | Chart          | Trading charts with indicators        |
-| `/tutorials`  | Tutorials      | User guides and help content          |
-| `/callback`   | Callback Page  | OAuth redirect handler                |
+**Framework:** React Router v6 with a single index route — the app is a single-page surface, not a URL-routed multi-page app.
 
 ### Route Structure
 
+`App.tsx` declares one root route at `/` that wraps everything in `Layout → AppRoot → AppContent`:
+
 ```typescript
-// In App.tsx - routes are lazy-loaded for performance
-const Dashboard = lazy(() => import('@/pages/dashboard'));
-const BotBuilder = lazy(() => import('@/pages/bot-builder'));
-const Chart = lazy(() => import('@/pages/chart'));
-const Tutorials = lazy(() => import('@/pages/tutorials'));
+// src/app/App.tsx (simplified)
+const Layout  = lazy(() => import('@/components/layout'));
+const AppRoot = lazy(() => import('./app-root'));
+
+const router = createBrowserRouter(
+    createRoutesFromElements(
+        <Route path='/' element={<Layout />}>
+            <Route index element={<AppRoot />} />
+        </Route>
+    )
+);
 ```
 
-A shared `Layout` wrapper provides the header, sidebar, and footer for all routes.
+### In-App Navigation
+
+Dashboard, Bot Builder, Chart, and Tutorials are tabs rendered by `src/pages/main/`. The active tab is stored in `DashboardStore` and reflected in the URL hash (`#dashboard`, `#bot_builder`, `#chart`, `#tutorial`) via the `DBOT_TABS` / `TAB_IDS` constants in [`src/constants/bot-contents`](../src/constants). There are no separate `/bot`, `/chart`, or `/tutorials` URL paths.
+
+### OAuth Callback
+
+There is **no `/callback` route**. The OAuth provider redirects back to `/?code=...&state=...`, and the `App` component handles the callback inline via the `useOAuthCallback` hook. See [Authentication](./04-authentication.md#authentication-flow).
 
 ---
 
@@ -316,15 +333,15 @@ Block definitions are in `src/external/bot-skeleton/scratch/blocks/`. Each categ
 
 ## Technical Indicators
 
-Custom technical indicator implementations are available in `src/external/indicators/`:
+Custom technical indicator implementations are available in `src/external/indicators/indicators/`:
 
-| Indicator                    | Module        | Description                          |
-| ---------------------------- | ------------- | ------------------------------------ |
-| Simple Moving Average        | `sma.js`      | Average price over N periods         |
-| Exponential Moving Average   | `ema.js`      | Weighted moving average              |
-| Bollinger Bands              | `bb.js`       | Volatility bands around SMA          |
-| MACD                         | `macd.js`     | Moving Average Convergence Divergence|
-| Relative Strength Index      | `rsi.js`      | Momentum oscillator (0-100)          |
+| Indicator                    | Module                              | Description                           |
+| ---------------------------- | ----------------------------------- | ------------------------------------- |
+| Simple Moving Average        | `simple-moving-average.js`          | Average price over N periods          |
+| Exponential Moving Average   | `exponential-moving-average.js`     | Weighted moving average               |
+| Bollinger Bands              | `bollinger-bands.js`                | Volatility bands around SMA           |
+| MACD                         | `macd.js`                           | Moving Average Convergence Divergence |
+| Relative Strength Index      | `relative-strength-index.js`        | Momentum oscillator (0-100)           |
 
 These JavaScript modules are used by bot strategies for market analysis during automated trading.
 

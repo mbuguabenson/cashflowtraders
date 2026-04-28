@@ -1,308 +1,175 @@
 # Trading Bot Template
 
-> A modern platform for automated derivatives trading with visual bot building, real-time analytics, and comprehensive tutorials.
+> A white-label starter for building and deploying your own visual trading bot platform on top of the Deriv trading API. Fork it, brand it, deploy it.
 
 ![Prerequisite](https://img.shields.io/badge/node-20.x-blue.svg)
 ![Prerequisite](https://img.shields.io/badge/npm-9.x-blue.svg)
 ![Build](https://img.shields.io/badge/build-RSBuild-green.svg)
 ![Framework](https://img.shields.io/badge/framework-React%2018-blue.svg)
 
-## Table of Contents
-
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-- [Project Overview](#project-overview)
-    - [Key Features](#key-features)
-    - [Architecture](#architecture)
-- [Development Workflow](#development-workflow)
-    - [Available Scripts](#available-scripts)
-    - [Starting Development Server](#starting-development-server)
-    - [Building for Production](#building-for-production)
-- [Project Structure](#project-structure)
-- [Technologies Used](#technologies-used)
-- [Configuration](#configuration)
-    - [Environment Variables](#environment-variables)
-    - [Deployment Setup](#deployment-setup)
-- [Testing](#testing)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-
-## Getting Started
-
-### Prerequisites
-
-Before working with this repository, ensure you have the following installed:
-
-- **Node.js 20.x** - Required for running the application
-- **npm 9.x** - Package manager
-- **git** - For version control
-
-### Installation
-
-1. **Clone the repository**
-
-    ```sh
-    git clone <repository-url>
-    cd trading-bot-template
-    ```
-
-2. **Install dependencies**
-
-    ```sh
-    npm install
-    ```
-
-3. **Build the application**
-
-    ```sh
-    npm run build
-    ```
-
-4. **Start the development server**
-
-    ```sh
-    npm start
-    ```
-
-The application will be available at `https://localhost:8443/` (or the port specified by RSBuild).
-
-## Project Overview
-
-Trading Bot Template is a comprehensive platform for automated derivatives trading that provides users with powerful tools to create, test, and deploy trading bots without requiring programming knowledge.
-
-### Key Features
-
-- **🎯 Visual Bot Builder**: Drag-and-drop interface using Blockly for creating trading strategies
-- **📊 Real-time Dashboard**: Monitor active bots, trading performance, and account statistics
-- **📈 Integrated Charts**: SmartCharts integration for advanced market analysis
-- **🎓 Interactive Tutorials**: Step-by-step guides for learning bot building and trading strategies
-- **📱 Responsive Design**: Optimized for both desktop and mobile devices
-- **📊 Analytics Integration**: Comprehensive tracking with RudderStack and GTM
-- **⚡ Real-time Updates**: WebSocket connections for live market data and bot status
-
-### Architecture
-
-The application follows a modular, component-based architecture:
-
-- **Frontend**: React 18 with TypeScript for type safety
-- **State Management**: MobX for reactive state management
-- **Build System**: RSBuild for fast development and optimized production builds
-- **Styling**: Sass with component-scoped styles
-- **Testing**: Jest with React Testing Library
-- **Code Quality**: ESLint, Prettier, and Husky for consistent code standards
-
-## Development Workflow
-
-### Available Scripts
-
-| Command                 | Description                              |
-| ----------------------- | ---------------------------------------- |
-| `npm start`             | Start development server with hot reload |
-| `npm run build`         | Create production build                  |
-| `npm run watch`         | Build in watch mode for development      |
-| `npm run serve`         | Serve production build locally           |
-| `npm test`              | Run Jest tests                           |
-| `npm run coverage`      | Generate test coverage report            |
-| `npm run test:lint`     | Run linting and formatting               |
-| `npm run test:fix`      | Fix linting issues automatically         |
-| `npm run build:analyze` | Analyze bundle size with detailed report |
-
-### Starting Development Server
-
-For local development:
-
-```sh
-# Start the development server
-npm start
-
-# Alternative: Start with webpack (if needed)
-npm run start:webpack
-```
-
-The development server includes:
-
-- Hot module replacement
-- Source maps
-- Live reloading
-- Error overlay
-
-### Building for Production
-
-```sh
-# Create optimized production build
-npm run build
-
-# Analyze bundle size
-npm run build:analyze
-
-# Serve production build locally for testing
-npm run serve
-```
-
-## Project Structure
-
-```
-src/
-├── components/           # Reusable UI components
-│   ├── button-link/     # Custom button components
-│   ├── error-component/ # Error boundary handling
-│   └── trading-view-chart/ # Chart integration
-├── pages/               # Main application pages
-│   ├── dashboard/       # Bot management dashboard
-│   ├── bot-builder/     # Visual bot building interface
-│   ├── chart/           # Trading charts and analysis
-│   ├── tutorials/       # Interactive learning modules
-│   └── main/            # Main application wrapper
-├── hooks/               # Custom React hooks
-├── analytics/           # Analytics and tracking utilities
-├── external/            # External integrations
-│   └── bot-skeleton/    # Core bot functionality
-├── styles/              # Global styles and theme
-└── xml/                 # Pre-built bot strategy templates
-```
-
-### Core Pages
-
-- **Dashboard**: Central hub for managing bots, viewing performance, and accessing quick actions
-- **Bot Builder**: Visual programming interface using Blockly for creating trading strategies
-- **Charts**: Integrated TradingView charts with market analysis tools
-- **Tutorials**: Interactive guides and educational content
-
-## Technologies Used
-
-### Core Technologies
-
-- **React 18** - Modern React with Hooks and Concurrent Features
-- **TypeScript** - Static type checking and enhanced developer experience
-- **MobX** - Reactive state management
-- **React Router** - Client-side routing
-
-### Build & Development
-
-- **RSBuild** - Fast build tool with optimized defaults
-- **Sass** - Advanced CSS with variables and mixins
-- **Jest** - Testing framework
-- **ESLint + Prettier** - Code quality and formatting
-
-### UI & Visualization
-
-- **Blockly** - Visual programming blocks for bot building
-- **TradingView** - Advanced charting and market analysis
-- **Framer Motion** - Smooth animations and transitions
-- **@deriv-com/ui** - Deriv's design system components
-
-### External Services
-
-- **@deriv-com/analytics** - Analytics and user tracking
-- **@deriv/deriv-api** - Trading API integration
-- **@datadog/browser-rum** - Real user monitoring
-
-## Configuration
-
-### Deployment Setup
-
-#### Cloudflare Pages
-
-For deploying to Cloudflare Pages, configure the following secrets in GitHub Actions:
-
-```env
-CLOUDFLARE_ACCOUNT_ID=your_account_id
-CLOUDFLARE_API_TOKEN=your_api_token
-CLOUDFLARE_PROJECT_NAME=your_project_name
-```
-
-## Testing
-
-The project uses Jest and React Testing Library for testing:
-
-```sh
-# Run all tests
-npm test
-
-# Run tests with coverage
-npm run coverage
-
-# Run tests in watch mode
-npm test -- --watch
-
-# Run specific test file
-npm test -- dashboard.spec.tsx
-```
-
-### Test Structure
-
-- **Unit Tests**: Individual component and utility function tests
-- **Integration Tests**: Testing component interactions
-- **End-to-End**: Testing complete user workflows
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Development server won't start**
-
-    ```sh
-    # Clear npm cache and reinstall
-    npm cache clean --force
-    rm -rf node_modules package-lock.json
-    npm install
-    ```
-
-2. **Build failures**
-
-    ```sh
-    # Check Node.js version
-    node --version  # Should be 20.x
-
-    # Clear RSBuild cache
-    rm -rf dist
-    npm run build
-    ```
-
-3. **Blockly workspace issues**
-    - Ensure browser supports Web Workers
-    - Check console for JavaScript errors
-    - Try refreshing the page to reinitialize workspace
-
-4. **WebSocket connection problems**
-    - Verify network connectivity
-    - Check if firewall is blocking WebSocket connections
-    - Ensure correct API endpoints in environment variables
-
-### Performance Optimization
-
-- Use `npm run build:analyze` to identify bundle size issues
-- Lazy load components using React.lazy() where appropriate
-- Monitor memory usage in browser DevTools
-- Use React DevTools Profiler to identify rendering bottlenecks
-
-## Contributing
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make your changes**
-4. **Run tests**: `npm test`
-5. **Run linting**: `npm run test:lint`
-6. **Commit your changes**: `git commit -m 'Add amazing feature'`
-7. **Push to the branch**: `git push origin feature/amazing-feature`
-8. **Open a Pull Request**
-
-### Code Standards
-
-- Follow TypeScript best practices
-- Use functional components with hooks
-- Write comprehensive tests for new features
-- Follow existing naming conventions
-- Update documentation for significant changes
-
-### Git Workflow
-
-- Use conventional commits: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`
-- Keep commits atomic and focused
-- Write descriptive commit messages
-- Rebase feature branches before merging
+This repository is a **template**, not a finished product. It is intended to be forked, customized with your own brand, and deployed to your own domain. The trading engine, OAuth flow, and WebSocket integration all point at Deriv's infrastructure out of the box — everything else (branding, theming, menu, logo, fonts, analytics, error reporting) is yours to configure.
 
 ---
 
-For additional support or questions, please refer to the project's issue tracker or contact the development team.
+## Table of Contents
+
+- [What You Get](#what-you-get)
+- [Who This Is For](#who-this-is-for)
+- [Quick Start (Fork → Brand → Run)](#quick-start-fork--brand--run)
+- [Prerequisites](#prerequisites)
+- [Documentation](#documentation)
+- [Project Layout](#project-layout)
+- [Configuration at a Glance](#configuration-at-a-glance)
+- [Things You Must Not Change](#things-you-must-not-change)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## What You Get
+
+- **Visual Bot Builder** — Drag-and-drop strategy builder powered by Blockly, with a library of pre-built trading blocks.
+- **Integrated Charts** — SmartCharts (TradingView-style) with the standard set of technical indicators (SMA, EMA, Bollinger Bands, MACD, RSI).
+- **Dashboard** — Bot performance, recent activity, and quick actions.
+- **OAuth 2.0 with PKCE** — Production-ready authentication flow against Deriv's OAuth server.
+- **Authenticated WebSocket connection** — Real-time market data, balance, trade execution, and account switching via the DerivWS API.
+- **White-label configuration** — A single `brand.config.json` drives your colors, typography, logo, domain, menus, and theme behavior.
+- **Centralized error logging** — `ErrorLogger` utility with a pluggable interface for Sentry, TrackJS, or any other reporting service.
+- **Optional monitoring stack** — Guides for re-enabling Datadog RUM, TrackJS, Rudderstack analytics, and Growthbook feature flags (removed from the base to keep the bundle lean).
+- **Fast builds** — RSBuild for sub-second dev server startup and optimized production bundles.
+
+## Who This Is For
+
+Developers who want to ship a branded derivatives trading bot application without building the Blockly integration, bot runtime, OAuth flow, or WebSocket layer from scratch. You are expected to be comfortable with:
+
+- React, TypeScript, and modern JavaScript tooling
+- Deploying a static SPA to your own infrastructure (Vercel, Netlify, Cloudflare Pages, S3+CloudFront, etc.)
+- Registering an OAuth app with Deriv to get a `CLIENT_ID` for your domain
+
+---
+
+## Quick Start (Fork → Brand → Run)
+
+```bash
+# 1. Fork this repo on GitHub, then clone your fork
+git clone https://github.com/<your-org>/<your-fork>.git
+cd <your-fork>
+
+# 2. Install dependencies (Node 20.x required)
+npm install
+
+# 3. Configure your brand
+#    Edit brand.config.json: brand_name, domain, colors, logo, typography
+#    See user-guide/03-white-labeling.md for the full reference
+
+# 4. Generate brand CSS (validates your config, writes src/styles/_themes.scss)
+npm run generate:brand-css
+
+# 5. Add your OAuth credentials
+#    Create .env and set CLIENT_ID to the OAuth client ID you registered with Deriv
+echo "CLIENT_ID=your_deriv_oauth_client_id" > .env
+
+# 6. Start the dev server
+npm start
+#    → https://localhost:8443
+```
+
+Then walk through the full setup in [Getting Started](./user-guide/01-getting-started.md).
+
+---
+
+## Prerequisites
+
+| Requirement | Version                             | Why                                                      |
+| ----------- | ----------------------------------- | -------------------------------------------------------- |
+| Node.js     | 20.x                                | Enforced via `package.json` engines                      |
+| npm         | 9.x                                 | Package manager                                          |
+| Git         | 2.30+                               | Version control                                          |
+| Browser     | Chrome, Firefox, or Safari (latest) | Dev server runs on HTTPS; WebCrypto is required for PKCE |
+
+You will also need a **Deriv OAuth client ID** registered against the domain you intend to deploy to. Without it, login will fail — the authentication flow and the WebSocket handshake both depend on it.
+
+---
+
+## Documentation
+
+All the setup, configuration, and architectural context lives under [`user-guide/`](./user-guide). Start here:
+
+| #   | Guide                                                             | What's inside                                                       |
+| --- | ----------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 01  | [Getting Started](./user-guide/01-getting-started.md)             | Prerequisites, project setup, commands, environment variables       |
+| 02  | [Architecture Overview](./user-guide/02-architecture-overview.md) | Layers, MobX stores, RxJS streams, bot engine, build system         |
+| 03  | [White Labeling](./user-guide/03-white-labeling.md)               | Branding, colors, typography, logo, menus, theme configuration      |
+| 04  | [Authentication](./user-guide/04-authentication.md)               | OAuth 2.0 with PKCE, token exchange, session management, logout     |
+| 05  | [WebSocket Integration](./user-guide/05-websocket-integration.md) | Connection architecture, public vs authenticated endpoints, DerivWS |
+| 06  | [Error Handling](./user-guide/06-error-handling.md)               | Centralized `ErrorLogger`, Sentry/TrackJS integration, migration    |
+| 07  | [Monitoring & Analytics](./user-guide/07-monitoring-analytics.md) | Re-enabling Datadog, TrackJS, Rudderstack, Growthbook               |
+| 08  | [Changelog](./user-guide/08-changelog.md)                         | What changed from the original Deriv Bot to this template           |
+
+New to the template? Read them in order. Just need to re-skin? Jump straight to [White Labeling](./user-guide/03-white-labeling.md).
+
+---
+
+## Project Layout
+
+- [`brand.config.json`](./brand.config.json) — white-label config (brand, colors, logo, domain)
+- [`src/`](./src) — application source ([`app/`](./src/app), [`pages/`](./src/pages), [`stores/`](./src/stores), [`services/`](./src/services), [`hooks/`](./src/hooks), [`components/layout/`](./src/components/layout))
+- [`src/external/bot-skeleton/`](./src/external/bot-skeleton) — bot runtime, Blockly blocks, WebSocket layer
+- [`src/external/indicators/`](./src/external/indicators) — SMA, EMA, Bollinger Bands, MACD, RSI
+- [`scripts/generate-brand-css.js`](./scripts/generate-brand-css.js) — generates `src/styles/_themes.scss` from `brand.config.json`
+- [`user-guide/`](./user-guide) — developer documentation (see above)
+
+For the layer-by-layer breakdown see [Architecture Overview](./user-guide/02-architecture-overview.md); for the full directory tree see [Getting Started — Project Structure](./user-guide/01-getting-started.md#project-structure).
+
+---
+
+## Configuration at a Glance
+
+- **`brand.config.json`** drives every visual/identity knob — brand, colors, typography, logo, footer, hostnames. Edit it and run `npm run generate:brand-css`. Full reference: [White Labeling Guide](./user-guide/03-white-labeling.md).
+- **`.env`** holds secrets. `CLIENT_ID` is required for login; everything else (`APP_ID`, Google Drive, translations, monitoring credentials) is optional. Full table: [Getting Started — Environment Variables](./user-guide/01-getting-started.md#environment-variables).
+- **npm scripts** — see `package.json`. Most common: `npm start`, `npm run build`, `npm test`, `npm run generate:brand-css`. Full list: [Getting Started — Available Commands](./user-guide/01-getting-started.md#available-commands).
+
+---
+
+## Things You Must Not Change
+
+The template relies on Deriv's infrastructure for OAuth and for the WebSocket trading API. Keep these values in `brand.config.json` pointed at Deriv — changing them will break login and all trading functionality:
+
+- `platform.auth2_url.production` → `https://auth.deriv.com/oauth2/`
+- `platform.auth2_url.staging` → `https://staging-auth.deriv.com/oauth2/`
+- `platform.derivws.url.production` → `https://api.derivws.com/trading/v1/`
+- `platform.derivws.url.staging` → `https://staging-api.derivws.com/trading/v1/`
+
+Everything else (brand name, colors, logo, fonts, your own `platform.hostname`, menus, footer toggles) is yours to change.
+
+See [White Labeling — Configuration Constraints](./user-guide/03-white-labeling.md#authentication-urls) and [Changelog — Configuration Constraints](./user-guide/08-changelog.md#configuration-constraints).
+
+---
+
+## Deployment
+
+Any static host will work — the build output in `dist/` is a plain SPA.
+
+1. Run `npm run build` and ship the `dist/` directory.
+2. Register a Deriv OAuth client for your deployed domain and set `CLIENT_ID` in your host's environment variables.
+3. Set `platform.hostname.production` in `brand.config.json` to your deployed domain so environment detection picks the right config.
+4. Make sure your host serves `index.html` for unknown routes (SPA fallback) — OAuth redirects back to `/?code=...&state=...` and the `App` component handles the callback inline.
+
+---
+
+## Contributing
+
+This repo is intended as a template; most users will want to maintain their own fork rather than upstream changes. That said, bug fixes and improvements that apply to every downstream fork are welcome.
+
+- Conventional commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`
+- Run `npm run test:lint` before pushing
+- Run `npm test` and make sure the build still passes
+
+For bot builder and Blockly block changes, look in [`src/external/bot-skeleton/scratch/blocks/`](./src/external/bot-skeleton).
+
+---
+
+## License
+
+See [LICENSE](./LICENSE).
