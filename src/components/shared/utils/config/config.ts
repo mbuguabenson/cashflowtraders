@@ -36,54 +36,45 @@ export const isProduction = () => {
 export const isLocal = () => /localhost(:\d+)?$/i.test(window.location.hostname);
 
 const getDefaultServerURL = () => {
-    // Check if we are authorized via legacy tokens (acct1, token1, etc.)
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasUrlToken = urlParams.has('token1') || urlParams.has('token');
-    
-    const activeAccountId = localStorage.getItem('active_loginid');
-    const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
-    const hasStoredToken = activeAccountId && accountsList[activeAccountId];
-
-    // For legacy users, use the Binary WS v3 endpoint which reliably supports token-based authorize frames
-    if (hasUrlToken || hasStoredToken) {
-        return 'wss://ws.binaryws.com/websockets/v3';
-    }
-
     const isProductionEnv = isProduction();
     const environment = isProductionEnv ? 'PRODUCTION' : 'STAGING';
     return WS_SERVERS[environment];
 };
 
-
-
-
 /**
  * Gets the WebSocket URL using the new authenticated flow
- * This function orchestrates the complete flow:
- * 1. Get access token from auth_info
- * 2. Fetch accounts list from derivatives/accounts
- * 3. Store accounts in sessionStorage
- * 4. Get default account (first from list)
- * 5. Fetch OTP and WebSocket URL for that account
- *
  * @returns Promise with WebSocket URL or fallback to default server
  */
 export const getSocketURL = async (): Promise<string> => {
     try {
-        // Check if user is authenticated
+        // 1. Check if user is authenticated via Modern OAuth 2.0
         const authInfo = OAuthTokenExchangeService.getAuthInfo();
-        if (!authInfo || !authInfo.access_token) {
-            return getDefaultServerURL();
+        if (authInfo?.access_token) {
+            // Use the DerivWSAccountsService to get authenticated (OTP) WebSocket URL
+            return await DerivWSAccountsService.getAuthenticatedWebSocketURL(authInfo.access_token);
         }
 
-        // Use the DerivWSAccountsService to get authenticated WebSocket URL
-        const wsUrl = await DerivWSAccountsService.getAuthenticatedWebSocketURL(authInfo.access_token);
-        return wsUrl;
+        // 2. Check if we have legacy auth tokens (for URL-based login)
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasUrlToken = urlParams.has('token1') || urlParams.has('token');
+        
+        const activeAccountId = localStorage.getItem('active_loginid');
+        const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
+        const hasStoredToken = activeAccountId && accountsList[activeAccountId];
+
+        if (hasUrlToken || hasStoredToken) {
+            // For legacy authorized sessions, we use the non-public endpoint
+            return getDefaultServerURL().replace('/public', '');
+        }
+
+        // 3. Fallback to default public server
+        return getDefaultServerURL();
     } catch (error) {
         console.error('[DerivWS] Error in getSocketURL:', error);
         return getDefaultServerURL();
     }
 };
+
 
 export const getDebugServiceWorker = () => {
     const debug_service_worker_flag = window.localStorage.getItem('debug_service_worker');
