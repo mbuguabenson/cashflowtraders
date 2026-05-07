@@ -7,14 +7,14 @@
     },
     "domain_name": "cashflowtraders.vercel.app",
     "colors": {
-        "primary": "#0ea5e9",
-        "secondary": "#64748b",
-        "tertiary": "#6366f1",
+        "primary": "#2563eb",
+        "secondary": "#059669",
+        "tertiary": "#7c3aed",
         "success": "#10b981",
         "danger": "#f43f5e",
         "warning": "#f59e0b",
         "info": "#38bdf8",
-        "neutral": "#94a3b8",
+        "neutral": "#64748b",
         "black": "#0f172a",
         "white": "#ffffff",
         "grey": {
