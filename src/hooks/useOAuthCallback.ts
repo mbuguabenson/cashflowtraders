@@ -75,6 +75,9 @@ export const useOAuthCallback = (): OAuthCallbackResult => {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
+        
+        console.log('[OAuth-Debug] Current URL:', window.location.href);
+        console.log('[OAuth-Debug] Current Search Params:', window.location.search);
 
         // Extract OAuth parameters
         const code = urlParams.get('code');
