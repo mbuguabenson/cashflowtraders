@@ -251,7 +251,8 @@ export const generateOAuthURL = async (prompt?: string) => {
                 ? `https://${brandConfig.brand_domain}/` 
                 : `${protocol}//${host}/`;
             
-            const scopes = 'trade+account_manage';
+            const scopes = 'trade';
+
 
 
             // Build OAuth URL with PKCE parameters

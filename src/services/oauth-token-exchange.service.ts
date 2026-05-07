@@ -144,7 +144,11 @@ export class OAuthTokenExchangeService {
 
             const protocol = window.location.protocol;
             const host = window.location.host;
-            const redirectUrl = `${protocol}//${host}`;
+            const isProd = host.includes('vercel.app');
+            const redirectUrl = isProd 
+                ? `https://${brandConfig.brand_domain}/` 
+                : `${protocol}//${host}/`;
+
 
             const requestBody = new URLSearchParams({
                 grant_type: 'authorization_code',
@@ -154,14 +158,19 @@ export class OAuthTokenExchangeService {
                 code_verifier: codeVerifier, // PKCE: Include code verifier
             });
 
-            const response = await fetch(tokenEndpoint, {
+            const response = await fetch('/api/token', {
                 method: 'POST',
-                credentials: 'include', // Include cookies for session-based auth
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
                 },
-                body: requestBody.toString(),
+                body: JSON.stringify({
+                    code: code,
+                    code_verifier: codeVerifier,
+                    redirect_uri: redirectUrl,
+                    client_id: clientId,
+                }),
             });
+
 
             // Parse response
             const data: TokenExchangeResponse = await response.json();
