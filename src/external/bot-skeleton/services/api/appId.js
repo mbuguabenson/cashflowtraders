@@ -97,7 +97,15 @@ export const generateDerivApiInstance = async (forceNew = false) => {
                 console.log('[DerivAPI] WebSocket connection established');
             });
 
+            let frameCount = 0;
+            deriv_socket.addEventListener('message', (event) => {
+                if (frameCount < 5) {
+                    console.log(`[WS-DEBUG] Frame ${++frameCount}:`, JSON.parse(event.data));
+                }
+            });
+
             deriv_socket.addEventListener('error', error => {
+
                 console.error('[DerivAPI] WebSocket connection error:', error);
             });
 
