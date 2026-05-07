@@ -15,11 +15,9 @@ coverage
 key.pem
 cert.pem
 
-.env
-.env.*
-*.env
 
 *.secret
+
 nx-cloud.env
 test-results/
 playwright-report/
