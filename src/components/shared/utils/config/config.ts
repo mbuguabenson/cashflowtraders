@@ -265,7 +265,9 @@ export const generateOAuthURL = async (prompt?: string) => {
                 ? `https://${brandConfig.brand_domain}/` 
                 : `${protocol}//${host}/`;
             
-            const scopes = 'trade';
+            // Reverting to the more common scope combination which is less likely to trigger WAF blocks
+            const scopes = 'trade+account_manage';
+
 
 
 
