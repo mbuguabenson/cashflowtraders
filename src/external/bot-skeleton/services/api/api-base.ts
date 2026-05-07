@@ -260,7 +260,18 @@ class APIBase {
         setIsAuthorizing(true);
 
         try {
+            // Check for legacy token in localStorage (for users who authenticated via URL parameters)
+            const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
+            const token = accountsList[this.account_id];
+
+            if (token) {
+                // For legacy users, we must explicitly authorize the WebSocket connection
+                // to access private data like balances and active accounts
+                await this.api.authorize(token);
+            }
+
             const { balance, error } = await this.api.balance();
+
 
             if (error) {
                 const errorMessage = isBackendError(error)
