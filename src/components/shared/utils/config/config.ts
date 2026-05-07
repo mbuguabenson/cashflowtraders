@@ -244,8 +244,15 @@ export const generateOAuthURL = async (prompt?: string) => {
             // Build redirect URL
             const protocol = window.location.protocol;
             const host = window.location.host;
-            const redirectUrl = `${protocol}//${host}/`;
+            
+            // Strictly use the branded domain for production to ensure match with Deriv registration
+            const isProd = isProduction();
+            const redirectUrl = isProd 
+                ? `https://${brandConfig.brand_domain}/` 
+                : `${protocol}//${host}/`;
+            
             const scopes = 'trade+account_manage';
+
 
             // Build OAuth URL with PKCE parameters
             // - state: CSRF token for security
