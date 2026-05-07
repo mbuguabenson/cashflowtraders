@@ -5,6 +5,7 @@ import CommonStore from '@/stores/common-store';
 import { DerivWSAccountsService } from '@/services/derivws-accounts.service';
 import { TAuthData } from '@/types/api-types';
 import { clearAuthData } from '@/utils/auth-utils';
+import { processLegacyAuthParams } from '@/utils/legacy-auth-utils';
 import { handleBackendError, isBackendError } from '@/utils/error-handler';
 import { activeSymbolsProcessorService } from '../../../../services/active-symbols-processor.service';
 import { observer as globalObserver } from '../../utils/observer';
@@ -98,6 +99,7 @@ class APIBase {
     }
 
     private async handleTokenExchangeIfNeeded() {
+        processLegacyAuthParams();
         const urlParams = new URLSearchParams(window.location.search);
         const account_id = urlParams.get('account_id');
         const accountType = urlParams.get('account_type');
