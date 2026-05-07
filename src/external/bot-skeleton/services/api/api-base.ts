@@ -309,22 +309,33 @@ class APIBase {
                   }
                 : null;
 
-            // Build full account list from sessionStorage (populated during OAuth flow)
-            // Falls back to just the current account if sessionStorage has no data
+            // Build full account list
+            // 1. Try to get from auth_data (returned by authorize call for legacy tokens)
+            // 2. Try to get from sessionStorage (populated during modern OAuth flow)
+            // 3. Fallback to just the current account
             const storedAccounts = DerivWSAccountsService.getStoredAccounts();
-            const accountList =
-                storedAccounts && storedAccounts.length > 0
-                    ? storedAccounts
-                          .filter(a => !a.status || a.status === 'active')
-                          .map(a => ({
-                              balance: parseFloat(a.balance) || 0,
-                              currency: a.currency || 'USD',
-                              is_virtual: a.account_type === 'demo' ? 1 : 0,
-                              loginid: a.account_id,
-                          }))
-                    : currentAccount
-                      ? [currentAccount]
-                      : [];
+            let accountList = [];
+
+            if (auth_data?.account_list?.length > 0) {
+                // Map from Deriv API structure to our app structure
+                accountList = auth_data.account_list.map(a => ({
+                    balance: parseFloat(a.balance) || 0,
+                    currency: a.currency || 'USD',
+                    is_virtual: a.is_virtual || (a.loginid?.startsWith('VRT') ? 1 : 0),
+                    loginid: a.loginid,
+                }));
+            } else if (storedAccounts?.length > 0) {
+                accountList = storedAccounts
+                    .filter(a => !a.status || a.status === 'active')
+                    .map(a => ({
+                        balance: parseFloat(a.balance) || 0,
+                        currency: a.currency || 'USD',
+                        is_virtual: a.account_type === 'demo' ? 1 : 0,
+                        loginid: a.account_id,
+                    }));
+            } else if (currentAccount) {
+                accountList = [currentAccount];
+            }
 
             setAccountList(accountList); // Observable stream
             setAuthData({
@@ -334,6 +345,7 @@ class APIBase {
                 is_virtual: account_type === 'real' ? 0 : 1,
                 account_list: accountList,
             });
+
 
             // // Set account_type in localStorage based on loginid prefix using centralized utility
             const loginid = balance?.loginid || '';
