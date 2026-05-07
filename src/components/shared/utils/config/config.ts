@@ -37,16 +37,24 @@ export const isLocal = () => /localhost(:\d+)?$/i.test(window.location.hostname)
 
 const getDefaultServerURL = () => {
     const isProductionEnv = isProduction();
+    
+    // Construct base WS URL
+    const environment = isProductionEnv ? 'PRODUCTION' : 'STAGING';
+    let wsUrl = WS_SERVERS[environment];
 
-    try {
-        return isProductionEnv ? WS_SERVERS.PRODUCTION : WS_SERVERS.STAGING;
-    } catch (error) {
-        console.error('Error in getDefaultServerURL:', error);
+    // Check if we have legacy auth tokens (for URL-based login)
+    // If authorized, ensure we aren't using the 'public' endpoint which blocks balance retrieval.
+    const activeAccountId = localStorage.getItem('active_loginid');
+    const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
+    const hasLegacyToken = activeAccountId && accountsList[activeAccountId];
+
+    if (hasLegacyToken) {
+        wsUrl = wsUrl.replace('/public', '/');
     }
 
-    // Production defaults to demov2, staging/preview defaults to qa194 (demo)
-    return isProductionEnv ? WS_SERVERS.PRODUCTION : WS_SERVERS.STAGING;
+    return wsUrl;
 };
+
 
 /**
  * Gets the WebSocket URL using the new authenticated flow
@@ -223,8 +231,8 @@ export const clearCSRFToken = (): void => {
 export const generateOAuthURL = async (prompt?: string) => {
     try {
         // Use brand config for login URLs
-        const environment = isProduction() ? 'production' : 'staging';
-        const hostname = brandConfig?.platform.auth2_url?.[environment];
+        const hostname = brandConfig?.platform.auth2_url?.[isProduction() ? 'production' : 'staging'];
+
         const clientId = process.env.CLIENT_ID;
 
         if (hostname && clientId) {
