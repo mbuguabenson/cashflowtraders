@@ -42,18 +42,24 @@ const getDefaultServerURL = () => {
     const environment = isProductionEnv ? 'PRODUCTION' : 'STAGING';
     let wsUrl = WS_SERVERS[environment];
 
-    // Check if we have legacy auth tokens (for URL-based login)
-    // If authorized, ensure we aren't using the 'public' endpoint which blocks balance retrieval.
+    // Check if we are authorized (legacy or modern)
+    // 1. Check current URL for legacy parameters (acct1, token1, etc.)
+    // 2. Check localStorage for previously stored legacy accounts
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasUrlToken = urlParams.has('token1') || urlParams.has('token');
+    
     const activeAccountId = localStorage.getItem('active_loginid');
     const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
-    const hasLegacyToken = activeAccountId && accountsList[activeAccountId];
+    const hasStoredToken = activeAccountId && accountsList[activeAccountId];
 
-    if (hasLegacyToken) {
+    // If authorized, ensure we aren't using the 'public' endpoint which blocks balance retrieval.
+    if (hasUrlToken || hasStoredToken) {
         wsUrl = wsUrl.replace('/public', '/');
     }
 
     return wsUrl;
 };
+
 
 
 /**
