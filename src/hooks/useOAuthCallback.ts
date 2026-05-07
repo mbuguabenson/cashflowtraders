@@ -86,9 +86,12 @@ export const useOAuthCallback = (): OAuthCallbackResult => {
         const error_description = urlParams.get('error_description');
 
         // Check if this is an OAuth callback (has code or error parameter)
-        const isOAuthCallback = code !== null || error !== null || state !== null;
+        // IMPORTANT: Ignore if legacy tokens are present to allow legacy handler to take over
+        const isLegacyCallback = urlParams.has('token1') || urlParams.has('token');
+        const isOAuthCallback = !isLegacyCallback && (code !== null || error !== null || state !== null);
 
         if (!isOAuthCallback) {
+
             // Not an OAuth callback, mark as complete
             setResult({
                 isProcessing: false,

@@ -36,15 +36,7 @@ export const isProduction = () => {
 export const isLocal = () => /localhost(:\d+)?$/i.test(window.location.hostname);
 
 const getDefaultServerURL = () => {
-    const isProductionEnv = isProduction();
-    
-    // Construct base WS URL
-    const environment = isProductionEnv ? 'PRODUCTION' : 'STAGING';
-    let wsUrl = WS_SERVERS[environment];
-
-    // Check if we are authorized (legacy or modern)
-    // 1. Check current URL for legacy parameters (acct1, token1, etc.)
-    // 2. Check localStorage for previously stored legacy accounts
+    // Check if we are authorized via legacy tokens (acct1, token1, etc.)
     const urlParams = new URLSearchParams(window.location.search);
     const hasUrlToken = urlParams.has('token1') || urlParams.has('token');
     
@@ -52,13 +44,16 @@ const getDefaultServerURL = () => {
     const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
     const hasStoredToken = activeAccountId && accountsList[activeAccountId];
 
-    // If authorized, ensure we aren't using the 'public' endpoint which blocks balance retrieval.
+    // For legacy users, use the Binary WS v3 endpoint which reliably supports token-based authorize frames
     if (hasUrlToken || hasStoredToken) {
-        wsUrl = wsUrl.replace('/public', '/');
+        return 'wss://ws.binaryws.com/websockets/v3';
     }
 
-    return wsUrl;
+    const isProductionEnv = isProduction();
+    const environment = isProductionEnv ? 'PRODUCTION' : 'STAGING';
+    return WS_SERVERS[environment];
 };
+
 
 
 
