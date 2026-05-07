@@ -61,8 +61,12 @@ export const processLegacyAuthParams = (): void => {
             if (!localStorage.getItem('active_loginid') && firstAccountId) {
                 localStorage.setItem('active_loginid', firstAccountId);
             }
+            return true;
         }
+        return false;
     } catch (error) {
         console.error('Error processing legacy auth parameters:', error);
+        return false;
     }
 };
+

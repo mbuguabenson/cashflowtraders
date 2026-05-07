@@ -71,7 +71,12 @@ import { processLegacyAuthParams } from '@/utils/legacy-auth-utils';
  */
 function App() {
     // Instant extraction of legacy tokens if present in URL
-    processLegacyAuthParams();
+    // If successful, we do a hard redirect to clear the URL and refresh the session
+    if (processLegacyAuthParams()) {
+        window.location.replace(window.location.origin);
+        return null;
+    }
+
 
     // Handle OAuth callback flow (CSRF validation + code extraction)
     const { isProcessing, isValid, params, error, cleanupURL } = useOAuthCallback();
