@@ -245,13 +245,13 @@ export const generateOAuthURL = async (prompt?: string) => {
             const protocol = window.location.protocol;
             const host = window.location.host;
             const redirectUrl = `${protocol}//${host}`;
-            const scopes = 'trade';
+            const scopes = 'trade account_manage';
 
             // Build OAuth URL with PKCE parameters
             // - state: CSRF token for security
             // - code_challenge: SHA-256 hash of code_verifier
             // - code_challenge_method: S256 (SHA-256)
-            let oauthUrl = `${hostname}auth?scope=${scopes}&response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUrl)}&state=${csrfToken}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+            let oauthUrl = `${hostname}auth?scope=${encodeURIComponent(scopes)}&response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUrl)}&state=${csrfToken}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
 
             // Optional: prompt parameter (e.g. 'registration' for signup flow)
             if (prompt) {
@@ -263,6 +263,7 @@ export const generateOAuthURL = async (prompt?: string) => {
             if (appId) {
                 oauthUrl += `&app_id=${encodeURIComponent(appId)}`;
             }
+
 
             return oauthUrl;
         }
