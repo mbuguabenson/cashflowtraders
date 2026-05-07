@@ -264,16 +264,23 @@ class APIBase {
             const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
             const token = accountsList[this.account_id];
 
+            let auth_data = null;
+
             if (token) {
                 // For legacy users, we must explicitly authorize the WebSocket connection
                 // to access private data like balances and active accounts
-                await this.api.authorize(token);
+                const response = await this.api.authorize(token);
+                if (response?.authorize) {
+                    auth_data = response.authorize;
+                }
             }
 
-            const { balance, error } = await this.api.balance();
+            const balanceResponse = await this.api.balance();
+            const balance = balanceResponse?.balance || auth_data;
+            const error = balanceResponse?.error || (!balance ? { message: 'Failed to retrieve balance' } : null);
 
+            if (error && !balance) {
 
-            if (error) {
                 const errorMessage = isBackendError(error)
                     ? handleBackendError(error)
                     : error.message || 'Authorization failed';
