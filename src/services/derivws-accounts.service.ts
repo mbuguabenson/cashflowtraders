@@ -135,8 +135,10 @@ export class DerivWSAccountsService {
                     method: 'GET',
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
+                        'Deriv-App-ID': process.env.CLIENT_ID || '33cJNudwxWHenralOsZow',
                     },
                 });
+
 
                 if (!response.ok) {
                     throw new Error(`Failed to fetch accounts: ${response.status} ${response.statusText}`);
@@ -199,8 +201,10 @@ export class DerivWSAccountsService {
                     method: 'POST',
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
+                        'Deriv-App-ID': process.env.CLIENT_ID || '33cJNudwxWHenralOsZow',
                     },
                 });
+
 
                 if (!response.ok) {
                     throw new Error(`Failed to fetch OTP: ${response.status} ${response.statusText}`);
