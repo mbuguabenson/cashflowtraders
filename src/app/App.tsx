@@ -58,22 +58,27 @@ const router = createBrowserRouter(
     )
 );
 
+import { processLegacyAuthParams } from '@/utils/legacy-auth-utils';
+
 /**
  * Main App component
  *
  * Responsibilities:
  * 1. OAuth callback handling (via useOAuthCallback hook)
  * 2. Account switching from URL (via useAccountSwitching hook)
- * 3. Router provider setup
- *
- * All complex logic has been extracted into custom hooks for better maintainability
+ * 3. Legacy token extraction (from URL acct1/token1 params)
+ * 4. Router provider setup
  */
 function App() {
+    // Instant extraction of legacy tokens if present in URL
+    processLegacyAuthParams();
+
     // Handle OAuth callback flow (CSRF validation + code extraction)
     const { isProcessing, isValid, params, error, cleanupURL } = useOAuthCallback();
 
     // Handle account switching via URL parameter
     useAccountSwitching();
+
 
     // Process the authorization code when OAuth callback is valid
     React.useEffect(() => {
