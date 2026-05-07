@@ -350,12 +350,11 @@ class APIBase {
             // // Set account_type in localStorage based on loginid prefix using centralized utility
             const loginid = balance?.loginid || '';
             const isDemo = isDemoAccount(loginid);
+            localStorage.setItem('account_type', isDemo ? 'demo' : 'real');
 
-            if (isDemo) {
-                localStorage.setItem('account_type', 'demo');
-            } else {
-                localStorage.setItem('account_type', 'real');
-            }
+            // Start subscription for live balance updates
+            this.subscribe();
+
 
             globalObserver.emit('api.authorize', {
                 account_list: accountList,

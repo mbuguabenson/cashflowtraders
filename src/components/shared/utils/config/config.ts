@@ -63,12 +63,14 @@ export const getSocketURL = async (): Promise<string> => {
         const hasStoredToken = activeAccountId && accountsList[activeAccountId];
 
         if (hasUrlToken || hasStoredToken) {
-            // For legacy authorized sessions, we use the non-public endpoint
-            return getDefaultServerURL().replace('/public', '');
+            // For legacy authorized sessions, we use the Binary WS v3 endpoint
+            // as it reliably supports the token-based authorize frame.
+            return 'wss://ws.binaryws.com/websockets/v3';
         }
 
         // 3. Fallback to default public server
         return getDefaultServerURL();
+
     } catch (error) {
         console.error('[DerivWS] Error in getSocketURL:', error);
         return getDefaultServerURL();
