@@ -11,8 +11,8 @@ type TBrandLogoProps = {
 };
 
 export const BrandLogo = ({
-    width = 120,
-    height = 32,
+    width = 140,
+    height = 40,
     fill = 'currentColor',
     className = ''
 }: TBrandLogoProps) => {
@@ -20,59 +20,60 @@ export const BrandLogo = ({
         <svg
             width={width}
             height={height}
-            viewBox="0 0 120 32"
+            viewBox="0 0 140 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className={className}
-            aria-label="Brand Logo Placeholder"
+            aria-label="Cashflow Logo"
         >
-            {/* [AI] ⚠️ PLACEHOLDER - Replace with your brand's SVG */}
-
-            {/* Dashed border box to indicate placeholder */}
-            <rect
-                x="1"
-                y="1"
-                width="118"
-                height="30"
-                rx="4"
-                opacity="0.3"
-                fill="none"
-            />
-
-            {/* Image icon placeholder */}
-            <g transform="translate(8, 8)">
-                {/* Picture frame icon */}
-                <rect x="0" y="0" width="16" height="16" rx="2" stroke={fill} strokeWidth="1.5" fill="none" opacity="0.4" />
-
-                {/* Mountain/landscape icon inside */}
+            {/* Modern Flow Icon */}
+            <g transform="translate(4, 4)">
+                {/* Outer circle flow */}
                 <path
-                    d="M2 12L6 8L9 11L14 6V14H2V12Z"
-                    fill={fill}
-                    opacity="0.3"
+                    d="M16 2C8.26801 2 2 8.26801 2 16C2 23.732 8.26801 30 16 30C23.732 30 30 23.732 30 16"
+                    stroke={fill}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    opacity="0.8"
                 />
-
-                {/* Sun/circle in corner */}
-                <circle cx="11" cy="5" r="1.5" fill={fill} opacity="0.3" />
+                {/* Inner dollar flow line */}
+                <path
+                    d="M16 8V24M11 12H19C21 12 21 16 19 16H13C11 16 11 20 13 20H21"
+                    stroke={fill}
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeJoin="round"
+                />
             </g>
 
-            {/* "YOUR LOGO" text */}
+            {/* Cashflow Text */}
             <text
-                x="30"
-                y="20"
-                fontFamily="system-ui, -apple-system, sans-serif"
-                fontSize="11"
+                x="42"
+                y="26"
+                fontFamily="'Outfit', 'Inter', sans-serif"
+                fontSize="18"
+                fontWeight="700"
+                fill={fill}
+                letterSpacing="-0.5"
+            >
+                Cashflow
+            </text>
+            <text
+                x="42"
+                y="34"
+                fontFamily="'Inter', sans-serif"
+                fontSize="8"
                 fontWeight="500"
                 fill={fill}
-                opacity="0.5"
-                letterSpacing="0.5"
+                opacity="0.6"
+                letterSpacing="1"
             >
-                BRAND LOGO
+                TRADING ENGINE
             </text>
-
-            {/* [/AI] */}
         </svg>
     );
 };
+
 
 // CUSTOMIZATION OPTIONS:
 //
