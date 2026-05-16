@@ -112,7 +112,8 @@ export default class TradingTimes {
                     const { symbols } = submarket;
 
                     symbols?.forEach(symbol_obj => {
-                        const { times, underlying_symbol } = symbol_obj;
+                        const { times } = symbol_obj;
+                        const underlying_symbol = symbol_obj.underlying_symbol || symbol_obj.symbol;
 
                         // Validate symbol before processing
                         if (
