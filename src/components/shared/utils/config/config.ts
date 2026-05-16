@@ -1,5 +1,4 @@
-import { DerivWSAccountsService } from '@/services/derivws-accounts.service';
-import { OAuthTokenExchangeService } from '@/services/oauth-token-exchange.service';
+
 import brandConfig from '../../../../../brand.config.json';
 
 // =============================================================================
@@ -47,6 +46,10 @@ const getDefaultServerURL = () => {
  */
 export const getSocketURL = async (): Promise<string> => {
     try {
+        // Dynamic imports to break circular dependency with services
+        const { OAuthTokenExchangeService } = await import('@/services/oauth-token-exchange.service');
+        const { DerivWSAccountsService } = await import('@/services/derivws-accounts.service');
+
         // 1. Check if user is authenticated via Modern OAuth 2.0
         const authInfo = OAuthTokenExchangeService.getAuthInfo();
         if (authInfo?.access_token) {
@@ -57,7 +60,7 @@ export const getSocketURL = async (): Promise<string> => {
         // 2. Check if we have legacy auth tokens (for URL-based login)
         const urlParams = new URLSearchParams(window.location.search);
         const hasUrlToken = urlParams.has('token1') || urlParams.has('token');
-        
+
         const activeAccountId = localStorage.getItem('active_loginid');
         const accountsList = JSON.parse(localStorage.getItem('accountsList') || '{}');
         const hasStoredToken = activeAccountId && accountsList[activeAccountId];
@@ -71,13 +74,11 @@ export const getSocketURL = async (): Promise<string> => {
 
         // 3. Fallback to default public server
         return getDefaultServerURL();
-
     } catch (error) {
         console.error('[DerivWS] Error in getSocketURL:', error);
         return getDefaultServerURL();
     }
 };
-
 
 export const getDebugServiceWorker = () => {
     const debug_service_worker_flag = window.localStorage.getItem('debug_service_worker');
@@ -247,25 +248,19 @@ export const generateOAuthURL = async (prompt?: string) => {
             // Build redirect URL
             const protocol = window.location.protocol;
             const host = window.location.host;
-            
+
             // Strictly use the branded domain for production to ensure match with Deriv registration
             const isProd = isProduction();
-            const redirectUrl = isProd 
-                ? `https://${brandConfig.brand_domain}/` 
-                : `${protocol}//${host}/`;
-            
+            const redirectUrl = isProd ? `https://${brandConfig.brand_domain}/` : `${protocol}//${host}/`;
+
             // Reverting to the more common scope combination which is less likely to trigger WAF blocks
             const scopes = 'trade+account_manage';
-
-
-
 
             // Build OAuth URL with PKCE parameters
             // - state: CSRF token for security
             // - code_challenge: SHA-256 hash of code_verifier
             // - code_challenge_method: S256 (SHA-256)
             let oauthUrl = `${hostname}auth?scope=${scopes}&response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUrl)}&state=${csrfToken}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
-
 
             // Optional: prompt parameter (e.g. 'registration' for signup flow)
             if (prompt) {
@@ -277,8 +272,6 @@ export const generateOAuthURL = async (prompt?: string) => {
             if (appId) {
                 oauthUrl += `&app_id=${encodeURIComponent(appId)}`;
             }
-
-
 
             return oauthUrl;
         }
