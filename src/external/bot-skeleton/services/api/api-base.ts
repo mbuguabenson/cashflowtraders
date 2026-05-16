@@ -3,7 +3,6 @@ import { getAccountId, getAccountType, isDemoAccount, removeUrlParameter } from 
 /* [/AI] */
 import CommonStore from '@/stores/common-store';
 import { DerivWSAccountsService } from '@/services/derivws-accounts.service';
-import { TAuthData } from '@/types/api-types';
 import { clearAuthData } from '@/utils/auth-utils';
 import { processLegacyAuthParams } from '@/utils/legacy-auth-utils';
 import { handleBackendError, isBackendError } from '@/utils/error-handler';
@@ -316,16 +315,16 @@ class APIBase {
 
             if (auth_data?.account_list?.length > 0) {
                 // Map from Deriv API structure to our app structure
-                accountList = auth_data.account_list.map(a => ({
+                accountList = auth_data.account_list.map((a: any) => ({
                     balance: parseFloat(a.balance) || 0,
                     currency: a.currency || 'USD',
                     is_virtual: a.is_virtual || (a.loginid?.startsWith('VRT') ? 1 : 0),
                     loginid: a.loginid,
                 }));
-            } else if (storedAccounts?.length > 0) {
+            } else if (storedAccounts && storedAccounts.length > 0) {
                 accountList = storedAccounts
-                    .filter(a => !a.status || a.status === 'active')
-                    .map(a => ({
+                    .filter((a: any) => !a.status || a.status === 'active')
+                    .map((a: any) => ({
                         balance: parseFloat(a.balance) || 0,
                         currency: a.currency || 'USD',
                         is_virtual: a.account_type === 'demo' ? 1 : 0,
