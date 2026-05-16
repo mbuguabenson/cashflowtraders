@@ -65,7 +65,8 @@ export const getSocketURL = async (): Promise<string> => {
         if (hasUrlToken || hasStoredToken) {
             // For legacy authorized sessions, we use the Binary WS v3 endpoint
             // as it reliably supports the token-based authorize frame.
-            return 'wss://ws.binaryws.com/websockets/v3';
+            const appId = process.env.APP_ID || brandConfig.platform.app_id || '113831';
+            return `wss://ws.binaryws.com/websockets/v3?app_id=${appId}`;
         }
 
         // 3. Fallback to default public server
