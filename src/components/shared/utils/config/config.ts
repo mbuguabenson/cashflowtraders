@@ -17,8 +17,8 @@ export const STAGING_DOMAINS = {
 
 // WebSocket server URLs
 export const WS_SERVERS = {
-    STAGING: `${brandConfig.platform.derivws.url.staging}options/ws/public`,
-    PRODUCTION: `${brandConfig.platform.derivws.url.production}options/ws/public`,
+    STAGING: 'wss://ws.binaryws.com/websockets/v3',
+    PRODUCTION: 'wss://ws.binaryws.com/websockets/v3',
 } as const;
 
 // =============================================================================
@@ -72,11 +72,12 @@ export const getSocketURL = async (): Promise<string> => {
             return `wss://ws.binaryws.com/websockets/v3?app_id=${appId}`;
         }
 
-        // 3. Fallback to default public server
-        return getDefaultServerURL();
+        const appId = process.env.APP_ID || brandConfig.platform.app_id || '113831';
+        return `${getDefaultServerURL()}?app_id=${appId}`;
     } catch (error) {
         console.error('[DerivWS] Error in getSocketURL:', error);
-        return getDefaultServerURL();
+        const appId = process.env.APP_ID || brandConfig.platform.app_id || '113831';
+        return `${getDefaultServerURL()}?app_id=${appId}`;
     }
 };
 

@@ -1,0 +1,160 @@
+.digit-distribution-circles-v2 {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    background: var(--colors-general-section-1);
+    border-radius: 8px;
+    margin-bottom: 16px;
+
+    .distribution-title-group {
+        margin-bottom: 16px;
+        position: relative;
+
+        .distribution-title {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--text-prominent);
+        }
+
+        .distribution-title-underline {
+            height: 2px;
+            width: 40px;
+            background-color: var(--brand-red-coral);
+            margin-top: 4px;
+            border-radius: 2px;
+        }
+    }
+
+    .circles-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 24px;
+    }
+
+    .digit-item-container {
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+
+    .digit-ring {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.circle--current {
+            box-shadow: 0 0 0 2px var(--brand-red-coral);
+        }
+
+        &.circle--most {
+            .ring-progress { stroke: #4caf50; }
+        }
+
+        &.circle--second {
+            .ring-progress { stroke: #2196f3; }
+        }
+
+        &.circle--least {
+            .ring-progress { stroke: #f44336; }
+        }
+
+        &.circle--selected {
+            background-color: rgba(var(--brand-red-coral-rgb), 0.1);
+            .ring-progress { stroke: var(--brand-red-coral); }
+        }
+
+        &.circle--normal {
+            .ring-progress { stroke: var(--text-less-prominent); }
+        }
+
+        .ring-arrow {
+            position: absolute;
+            top: -16px;
+            color: var(--brand-red-coral);
+            font-size: 12px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .ring-inner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+
+            .digit-val {
+                font-size: 1.6rem;
+                font-weight: bold;
+                color: var(--text-prominent);
+                line-height: 1;
+            }
+
+            .digit-pct-inner {
+                font-size: 0.9rem;
+                color: var(--text-less-prominent);
+            }
+        }
+
+        .ring-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+
+            .ring-base {
+                fill: none;
+                stroke: var(--colors-general-section-2);
+                stroke-width: 4;
+            }
+
+            .ring-progress {
+                fill: none;
+                stroke-width: 4;
+                stroke-linecap: round;
+                transition: stroke-dasharray 0.3s ease;
+            }
+        }
+    }
+
+    .distribution-legend-v2 {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: center;
+        background: var(--colors-general-section-2);
+        padding: 8px 12px;
+        border-radius: 4px;
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 1.2rem;
+
+            .legend-label {
+                color: var(--text-general);
+            }
+
+            .legend-digit {
+                font-weight: bold;
+
+                &.most { color: #4caf50; }
+                &.second { color: #2196f3; }
+                &.current { color: var(--brand-red-coral); }
+                &.least { color: #f44336; }
+            }
+        }
+    }
+}

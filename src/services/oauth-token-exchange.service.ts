@@ -145,10 +145,7 @@ export class OAuthTokenExchangeService {
             const protocol = window.location.protocol;
             const host = window.location.host;
             const isProd = host.includes('vercel.app');
-            const redirectUrl = isProd 
-                ? `https://${brandConfig.brand_domain}/` 
-                : `${protocol}//${host}/`;
-
+            const redirectUrl = isProd ? `https://${brandConfig.brand_domain}/` : `${protocol}//${host}/`;
 
             const requestBody = new URLSearchParams({
                 grant_type: 'authorization_code',
@@ -170,7 +167,6 @@ export class OAuthTokenExchangeService {
                     client_id: clientId,
                 }),
             });
-
 
             // Parse response
             const data: TokenExchangeResponse = await response.json();

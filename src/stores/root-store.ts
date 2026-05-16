@@ -18,6 +18,14 @@ import ToolbarStore from './toolbar-store';
 import ToolboxStore from './toolbox-store';
 import TransactionsStore from './transactions-store';
 import UiStore from './ui-store';
+import SmartTradingStore from './smart-trading-store';
+import FreeBotsStore from './free-bots-store';
+import DigitCrackerStore from './digit-cracker-store';
+import MarketkillerStore from './marketkiller-store';
+import OverUnderStore from './over-under-store';
+import SmartAutoStore from './smart-auto-store';
+import AnalysisStore from './analysis-store';
+import AutoTraderStore from './auto-trader-store';
 
 // TODO: need to write types for the individual classes and convert them to ts
 export default class RootStore {
@@ -45,6 +53,14 @@ export default class RootStore {
     public ui: UiStore;
     public client: ClientStore;
     public common: CommonStore;
+    public smart_trading: SmartTradingStore;
+    public free_bots: FreeBotsStore;
+    public digit_cracker: DigitCrackerStore;
+    public marketkiller: MarketkillerStore;
+    public over_under: OverUnderStore;
+    public smart_auto: SmartAutoStore;
+    public analysis: AnalysisStore;
+    public auto_trader: AutoTraderStore;
 
     core = {
         ui: {},
@@ -57,7 +73,7 @@ export default class RootStore {
 
         // Need to fix later without using this.core
         this.ui = new UiStore();
-        this.client = new ClientStore();
+        this.client = new ClientStore(this);
         this.common = new CommonStore();
         this.core.ui = this.ui;
         this.core.client = this.client;
@@ -83,5 +99,14 @@ export default class RootStore {
         this.chart_store = new ChartStore(this);
         this.blockly_store = new BlocklyStore(this);
         this.data_collection_store = new DataCollectionStore(this, this.core);
+        
+        this.analysis = new AnalysisStore(this);
+        this.smart_trading = new SmartTradingStore(this);
+        this.free_bots = new FreeBotsStore(this);
+        this.digit_cracker = new DigitCrackerStore(this);
+        this.marketkiller = new MarketkillerStore(this);
+        this.over_under = new OverUnderStore(this);
+        this.smart_auto = new SmartAutoStore(this);
+        this.auto_trader = new AutoTraderStore(this);
     }
 }

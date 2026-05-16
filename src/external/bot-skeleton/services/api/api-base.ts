@@ -190,7 +190,12 @@ class APIBase {
         const hasAccountID = V2GetActiveAccountId();
 
         if (!this.has_active_symbols && !hasAccountID) {
-            this.active_symbols_promise = this.getActiveSymbols().then(() => undefined);
+            this.active_symbols_promise = this.getActiveSymbols()
+                .then(() => undefined)
+                .catch(error => {
+                    console.error('[APIBase] Initial active symbols fetch failed:', error);
+                    return undefined;
+                });
         }
 
         this.initEventListeners();
@@ -427,13 +432,21 @@ class APIBase {
                 setTimeout(() => reject(new Error('Active symbols fetch timeout')), this.ACTIVE_SYMBOLS_TIMEOUT_MS)
             );
 
-            const activeSymbolsPromise = doUntilDone(() => this.api?.send({ active_symbols: 'brief' }), [], this);
+            // Ensure API is connected before sending
+            if (this.api?.connection?.readyState !== 1) {
+                console.warn('[APIBase] API not connected (state:', this.api?.connection?.readyState, '), waiting...');
+            }
+
+            console.log('[APIBase] Fetching active symbols (full)...');
+            const activeSymbolsPromise = doUntilDone(() => this.api?.send({ active_symbols: 'full' }), [], this);
 
             const apiResult = await Promise.race([activeSymbolsPromise, timeout]);
 
             const { active_symbols = [], error = {} } = apiResult as any;
+            console.log(`[APIBase] Received ${active_symbols.length} active symbols`);
 
             if (error && Object.keys(error).length > 0) {
+                console.error('[APIBase] Error fetching active symbols:', error);
                 throw new Error(`Active symbols API error: ${error.message || 'Unknown error'}`);
             }
 
@@ -446,13 +459,15 @@ class APIBase {
             // Process active symbols using the dedicated service with fallback
             try {
                 const enrichmentTimeout = new Promise<never>((_, reject) =>
-                    setTimeout(() => reject(new Error('Enrichment timeout')), this.ENRICHMENT_TIMEOUT_MS)
+                    setTimeout(() => reject(new Error('Enrichment timed out')), 10000)
                 );
 
+                console.log('[APIBase] Processing active symbols with enrichment...');
                 const enrichmentPromise = activeSymbolsProcessorService.processActiveSymbols(active_symbols);
                 const processedResult = await Promise.race([enrichmentPromise, enrichmentTimeout]);
 
                 this.active_symbols = processedResult.enrichedSymbols;
+                console.log('[APIBase] Enrichment complete');
                 this.pip_sizes = processedResult.pipSizes;
             } catch (enrichmentError) {
                 console.warn('Symbol enrichment failed, using raw symbols:', enrichmentError);

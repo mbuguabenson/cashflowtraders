@@ -75,7 +75,7 @@ export const useOAuthCallback = (): OAuthCallbackResult => {
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        
+
         console.log('[OAuth-Debug] Current URL:', window.location.href);
         console.log('[OAuth-Debug] Current Search Params:', window.location.search);
 
@@ -91,7 +91,6 @@ export const useOAuthCallback = (): OAuthCallbackResult => {
         const isOAuthCallback = !isLegacyCallback && (code !== null || error !== null || state !== null);
 
         if (!isOAuthCallback) {
-
             // Not an OAuth callback, mark as complete
             setResult({
                 isProcessing: false,

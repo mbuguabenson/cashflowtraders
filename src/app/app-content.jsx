@@ -123,9 +123,23 @@ const AppContent = observer(() => {
         const retrieveActiveSymbols = () => {
             const { active_symbols } = ApiHelpers.instance;
 
-            active_symbols.retrieveActiveSymbols(true).then(() => {
+            // Add a timeout to prevent being stuck on loading screen forever
+            const timeoutId = setTimeout(() => {
+                console.warn('[AppContent] Active symbols retrieval timed out');
                 setIsLoading(false);
-            });
+            }, 10000);
+
+            active_symbols.retrieveActiveSymbols(true)
+                .then(() => {
+                    console.log('[AppContent] Active symbols retrieved successfully');
+                    clearTimeout(timeoutId);
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    console.error('[AppContent] Failed to retrieve active symbols:', error);
+                    clearTimeout(timeoutId);
+                    setIsLoading(false); // Still stop loading so user can see the app
+                });
         };
 
         if (ApiHelpers?.instance?.active_symbols) {
@@ -139,6 +153,12 @@ const AppContent = observer(() => {
                     retrieveActiveSymbols();
                 }
             }, 1000);
+
+            // Safety timeout for the interval as well
+            setTimeout(() => {
+                clearInterval(intervalId);
+                if (is_loading) setIsLoading(false);
+            }, 15000);
         }
     };
 

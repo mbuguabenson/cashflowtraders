@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { observer } from 'mobx-react-lite';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChunkLoader from '@/components/loader/chunk-loader';
+import PageContentWrapper from '@/components/page-content-wrapper';
 import { generateOAuthURL } from '@/components/shared';
 import DesktopWrapper from '@/components/shared_ui/desktop-wrapper';
 import Dialog from '@/components/shared_ui/dialog';
@@ -31,8 +32,10 @@ import {
 } from '@/utils/trade-type-modal-handler';
 import {
     LabelPairedChartLineCaptionRegularIcon,
+    LabelPairedLightbulbCaptionRegularIcon,
     LabelPairedObjectsColumnCaptionRegularIcon,
     LabelPairedPuzzlePieceTwoCaptionBoldIcon,
+    LabelPairedSignalCaptionRegularIcon,
 } from '@deriv/quill-icons/LabelPaired';
 import { LegacyGuide1pxIcon } from '@deriv/quill-icons/Legacy';
 import { Localize, localize } from '@deriv-com/translations';
@@ -45,6 +48,17 @@ import './main.scss';
 
 const ChartWrapper = lazy(() => import('../chart/chart-wrapper'));
 const Tutorial = lazy(() => import('../tutorials'));
+
+const SignalsTab = lazy(() => import('../signals/signals-tab'));
+const FreeBotsTab = lazy(() => import('../free-bots/free-bots-tab'));
+const EasyTool = lazy(() => import('../easy-tool/index'));
+const SmartAuto24 = lazy(() => import('../circles-analysis/index'));
+const DigitCracker = lazy(() => import('../digit-cracker/index'));
+const SignalCentrePage = lazy(() => import('../smart-trading/components/signal-centre-tab'));
+const Marketkiller = lazy(() => import('../marketkiller'));
+const OverUnderTab = lazy(() => import('../over-under'));
+const RiskManagementTab = lazy(() => import('../risk-management'));
+const MultiTraderTab = lazy(() => import('../multi-trader/multi-trader'));
 
 const AppWrapper = observer(() => {
     const { connectionStatus } = useApiBase();
@@ -77,7 +91,21 @@ const AppWrapper = observer(() => {
     const { clear } = summary_card;
     const { DASHBOARD, BOT_BUILDER } = DBOT_TABS;
     const init_render = React.useRef(true);
-    const hash = ['dashboard', 'bot_builder', 'chart', 'tutorial'];
+    const hash = [
+        'dashboard',
+        'bot_builder',
+        'chart',
+        'tutorial',
+        'easy_tool',
+        'free_bots',
+        'signals',
+        'signal_centre',
+        'smart_tools',
+        'marketkiller',
+        'over_under',
+        'risk_management',
+        'multi_trader',
+    ];
     const { isDesktop } = useDevice();
     const location = useLocation();
     const navigate = useNavigate();
@@ -423,6 +451,196 @@ const AppWrapper = observer(() => {
                                 >
                                     <ChartWrapper show_digits_stats={false} />
                                 </Suspense>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedLightbulbCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Easy Tool' />
+                                    </>
+                                }
+                                id='id-easy-tool'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Easy Tool...')} />}>
+                                        <EasyTool />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedLightbulbCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Free Bots' />
+                                    </>
+                                }
+                                id='id-free-bots'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Free Bots...')} />}>
+                                        <FreeBotsTab />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedSignalCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='AI Predictions' />
+                                    </>
+                                }
+                                id='id-signals'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Signals...')} />}>
+                                        <SignalsTab />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedObjectsColumnCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Market Scanner' />
+                                    </>
+                                }
+                                id='id-signal-centre'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Market Scanner...')} />}>
+                                        <SignalCentrePage />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedLightbulbCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Smart Auto V3' />
+                                    </>
+                                }
+                                id='id-smart-tools'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Smart Auto...')} />}>
+                                        <SmartAuto24 />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedLightbulbCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Digit Cracker' />
+                                    </>
+                                }
+                                id='id-digit-cracker'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Digit Cracker...')} />}>
+                                        <DigitCracker />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedLightbulbCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Marketkiller' />
+                                    </>
+                                }
+                                id='id-marketkiller'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Marketkiller...')} />}>
+                                        <Marketkiller />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedLightbulbCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Over/Under Analysis' />
+                                    </>
+                                }
+                                id='id-over-under'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Analysis...')} />}>
+                                        <OverUnderTab />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedLightbulbCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Risk Management' />
+                                    </>
+                                }
+                                id='id-risk-management'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Risk Management...')} />}>
+                                        <RiskManagementTab />
+                                    </Suspense>
+                                </PageContentWrapper>
+                            </div>
+                            <div
+                                label={
+                                    <>
+                                        <LabelPairedObjectsColumnCaptionRegularIcon
+                                            height='24px'
+                                            width='24px'
+                                            fill='var(--text-general)'
+                                        />
+                                        <Localize i18n_default_text='Multi Trader' />
+                                    </>
+                                }
+                                id='id-multi-trader'
+                            >
+                                <PageContentWrapper>
+                                    <Suspense fallback={<ChunkLoader message={localize('Loading Multi Trader...')} />}>
+                                        <MultiTraderTab />
+                                    </Suspense>
+                                </PageContentWrapper>
                             </div>
                             <div
                                 label={

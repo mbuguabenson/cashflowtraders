@@ -9,7 +9,7 @@ export const processLegacyAuthParams = (): void => {
         const urlParams = new URLSearchParams(window.location.search);
         const accountsList: Record<string, string> = JSON.parse(localStorage.getItem('accountsList') ?? '{}');
         const clientAccounts: Record<string, any> = JSON.parse(localStorage.getItem('clientAccounts') ?? '{}');
-        
+
         let hasChanges = false;
         let firstAccountId = '';
 
@@ -26,10 +26,10 @@ export const processLegacyAuthParams = (): void => {
                     currency,
                     account_type: isDemoAccount(accountId) ? 'demo' : 'real',
                 };
-                
+
                 if (!firstAccountId) firstAccountId = accountId;
                 hasChanges = true;
-                
+
                 // Cleanup URL
                 removeUrlParameter(`token${i}`);
                 removeUrlParameter(`acct${i}`);
@@ -56,7 +56,7 @@ export const processLegacyAuthParams = (): void => {
         if (hasChanges) {
             localStorage.setItem('accountsList', JSON.stringify(accountsList));
             localStorage.setItem('clientAccounts', JSON.stringify(clientAccounts));
-            
+
             // If we don't have an active login ID, set it to the first new one
             if (!localStorage.getItem('active_loginid') && firstAccountId) {
                 localStorage.setItem('active_loginid', firstAccountId);
@@ -69,4 +69,3 @@ export const processLegacyAuthParams = (): void => {
         return false;
     }
 };
-

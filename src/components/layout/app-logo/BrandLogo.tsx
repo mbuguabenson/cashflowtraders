@@ -10,70 +10,64 @@ type TBrandLogoProps = {
     className?: string;
 };
 
-export const BrandLogo = ({
-    width = 140,
-    height = 40,
-    fill = 'currentColor',
-    className = ''
-}: TBrandLogoProps) => {
+export const BrandLogo = ({ width = 140, height = 40, fill = 'currentColor', className = '' }: TBrandLogoProps) => {
     return (
         <svg
             width={width}
             height={height}
-            viewBox="0 0 140 40"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+            viewBox='0 0 140 40'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
             className={className}
-            aria-label="Cashflow Logo"
+            aria-label='Cashflow Logo'
         >
             {/* Modern Flow Icon */}
-            <g transform="translate(4, 4)">
+            <g transform='translate(4, 4)'>
                 {/* Outer circle flow */}
                 <path
-                    d="M16 2C8.26801 2 2 8.26801 2 16C2 23.732 8.26801 30 16 30C23.732 30 30 23.732 30 16"
+                    d='M16 2C8.26801 2 2 8.26801 2 16C2 23.732 8.26801 30 16 30C23.732 30 30 23.732 30 16'
                     stroke={fill}
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    opacity="0.8"
+                    strokeWidth='3'
+                    strokeLinecap='round'
+                    opacity='0.8'
                 />
                 {/* Inner dollar flow line */}
                 <path
-                    d="M16 8V24M11 12H19C21 12 21 16 19 16H13C11 16 11 20 13 20H21"
+                    d='M16 8V24M11 12H19C21 12 21 16 19 16H13C11 16 11 20 13 20H21'
                     stroke={fill}
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeJoin="round"
+                    strokeWidth='2.5'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
                 />
             </g>
 
             {/* Cashflow Text */}
             <text
-                x="42"
-                y="26"
+                x='42'
+                y='26'
                 fontFamily="'Outfit', 'Inter', sans-serif"
-                fontSize="18"
-                fontWeight="700"
+                fontSize='18'
+                fontWeight='700'
                 fill={fill}
-                letterSpacing="-0.5"
+                letterSpacing='-0.5'
             >
                 Cashflow
             </text>
             <text
-                x="42"
-                y="34"
+                x='42'
+                y='34'
                 fontFamily="'Inter', sans-serif"
-                fontSize="8"
-                fontWeight="500"
+                fontSize='8'
+                fontWeight='500'
                 fill={fill}
-                opacity="0.6"
-                letterSpacing="1"
+                opacity='0.6'
+                letterSpacing='1'
             >
                 TRADING ENGINE
             </text>
         </svg>
     );
 };
-
 
 // CUSTOMIZATION OPTIONS:
 //

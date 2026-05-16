@@ -32,7 +32,14 @@ const Loading = ({ className, id, is_fullscreen = true, is_slow_loading, status 
                 {is_slow_loading && (
                     <div className='initial-loader__status'>
                         {status?.map((text, inx) => (
-                            <Text as='p' color='prominent' size='xs' align='center' key={inx} className='initial-loader__status-text'>
+                            <Text
+                                as='p'
+                                color='prominent'
+                                size='xs'
+                                align='center'
+                                key={inx}
+                                className='initial-loader__status-text'
+                            >
                                 {text}
                             </Text>
                         ))}
@@ -46,4 +53,3 @@ const Loading = ({ className, id, is_fullscreen = true, is_slow_loading, status 
 };
 
 export default Loading;
-

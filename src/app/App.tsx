@@ -77,13 +77,11 @@ function App() {
         return null;
     }
 
-
     // Handle OAuth callback flow (CSRF validation + code extraction)
     const { isProcessing, isValid, params, error, cleanupURL } = useOAuthCallback();
 
     // Handle account switching via URL parameter
     useAccountSwitching();
-
 
     // Process the authorization code when OAuth callback is valid
     React.useEffect(() => {
