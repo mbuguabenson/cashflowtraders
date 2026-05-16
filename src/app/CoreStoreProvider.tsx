@@ -115,26 +115,25 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
     }, [client, common]);
 
     const handleMessages = useCallback(
-        // Changed parameter type from Record<string, unknown> to unknown to match onMessage signature
         async (res: unknown) => {
             if (!res) return;
-            const data = (res as Record<string, unknown>).data as TSocketResponseData<'balance'>;
+            // Support both raw messages and wrapped ones (some middlewares/versions wrap in 'data')
+            const data = ((res as any).msg_type ? res : (res as any).data) as TSocketResponseData<'balance'>;
+            if (!data) return;
+
             const { msg_type, error } = data;
 
-            // Handle auth errors by calling client.logout() directly instead of useLogout hook
-            // This prevents redundant logout operations since useLogout internally calls client.logout()
+            // Handle auth errors
             if (
                 error?.code === 'AuthorizationRequired' ||
                 error?.code === 'DisabledClient' ||
                 error?.code === 'InvalidToken'
             ) {
-                // Clear all URL query parameters for these auth errors
                 clearInvalidTokenParams();
-                // Call client store logout directly to avoid double logout
                 await client?.logout();
             }
 
-            if (msg_type === 'balance' && data && !error) {
+            if (msg_type === 'balance' && !error) {
                 const balance = data.balance;
                 if (balance && typeof balance.balance === 'number') {
                     client.setBalance(balance.balance.toString());
@@ -145,8 +144,6 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
                 }
             }
         },
-        // Fixed memory leak: removed handleLogout from deps as it's not used in function body
-        // Only client is actually referenced (line 129), preventing unnecessary re-subscriptions
         [client]
     );
 
