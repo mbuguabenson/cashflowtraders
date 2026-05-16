@@ -68,18 +68,11 @@ const CoreStoreProvider: React.FC<{ children: React.ReactNode }> = observer(({ c
         }
     }, [currentLang, common]);
 
-    // Type-safe interface for API with time() method
-    interface ApiWithTime {
-        time(): Promise<TSocketResponseData<'time'>>;
-    }
-
     useEffect(() => {
         const updateServerTime = () => {
-            // Fixed type safety: replaced 'as any' with proper interface and runtime check
-            // Ensures time() method exists before calling it
-            if (!api_base.api || !('time' in api_base.api)) return;
-            (api_base.api as ApiWithTime)
-                .time()
+            if (!api_base.api) return;
+            api_base.api
+                .send({ time: 1 })
                 .then((res: TSocketResponseData<'time'>) => {
                     common.setServerTime(toMoment(res.time), false);
                 })

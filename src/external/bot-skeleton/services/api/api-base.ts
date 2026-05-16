@@ -37,9 +37,8 @@ type TApiBaseApi = {
         addEventListener: (event: string, callback: () => void) => void;
         removeEventListener: (event: string, callback: () => void) => void;
     };
-    send: (data: unknown) => void;
+    send: (data: unknown) => Promise<any>;
     disconnect: () => void;
-    authorize: (token: string) => Promise<{ authorize: TAuthData; error: unknown }>;
 
     onMessage: () => {
         subscribe: (callback: (message: unknown) => void) => {
@@ -269,18 +268,17 @@ class APIBase {
             if (token) {
                 // For legacy users, we must explicitly authorize the WebSocket connection
                 // to access private data like balances and active accounts
-                const response = await this.api.authorize(token);
+                const response = await this.api.send({ authorize: token });
                 if (response?.authorize) {
                     auth_data = response.authorize;
                 }
             }
 
-            const balanceResponse = await this.api.balance();
+            const balanceResponse = await this.api.send({ balance: 1 });
             const balance = balanceResponse?.balance || auth_data;
             const error = balanceResponse?.error || (!balance ? { message: 'Failed to retrieve balance' } : null);
 
             if (error && !balance) {
-
                 const errorMessage = isBackendError(error)
                     ? handleBackendError(error)
                     : error.message || 'Authorization failed';
@@ -346,7 +344,6 @@ class APIBase {
                 account_list: accountList,
             });
 
-
             // // Set account_type in localStorage based on loginid prefix using centralized utility
             const loginid = balance?.loginid || '';
             const isDemo = isDemoAccount(loginid);
@@ -354,7 +351,6 @@ class APIBase {
 
             // Start subscription for live balance updates
             this.subscribe();
-
 
             globalObserver.emit('api.authorize', {
                 account_list: accountList,
