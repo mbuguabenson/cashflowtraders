@@ -188,11 +188,25 @@ const getBackoffDelayInMs = (error_obj, delay_index) => {
 
 export const updateErrorMessage = error => {
     if (error.error?.code === 'InputValidationFailed') {
+        // Existing handling for duration / amount
         if (error.error.details?.duration) {
             error.error.message = getLocalizedErrorMessage('DurationValidationFailed');
         }
         if (error.error.details?.amount) {
             error.error.message = getLocalizedErrorMessage('AmountValidationFailed');
+        }
+        // ---- NEW LEGACY‑SPECIFIC HANDLING ----
+        // Missing or unknown contract symbol
+        if (error.error.details?.symbol) {
+            error.error.message = getLocalizedErrorMessage('SymbolValidationFailed');
+        }
+        // Unsupported contract type for legacy bots
+        if (error.error.details?.contract_type) {
+            error.error.message = getLocalizedErrorMessage('ContractTypeValidationFailed');
+        }
+        // Fallback for any other validation issue
+        if (!error.error.message) {
+            error.error.message = getLocalizedErrorMessage('InputValidationFailed');
         }
     }
 };
